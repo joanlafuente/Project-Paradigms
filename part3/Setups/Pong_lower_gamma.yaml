@@ -1,0 +1,49 @@
+seed: 0 # Seed for reproducibility
+device: cuda
+env_name: PongNoFrameskip-v4
+
+pretrained: False # Set to True if you want to load a pretrained model
+check_freq: 2000 # check_freq is the frequency at which the callback is called, in this case, the callback is called every 2000 timesteps
+logs_dir: "./log_dir" # The directory for tensorboard logs
+
+
+total_timesteps: 10000000 # Total training timesteps
+log_interval: 10 # Interval between log entries
+
+Environment:
+  n_stack: 4 # Number of frames to stack
+  n_envs: 8 # Number of environments to run in parallel
+  frame_stack: 4 # Number of frames to skip between each action
+
+  mode: 0 # 0 for right, 1 for left
+  difficulty: 3 # [0, 1, 2, 3] for [easy, medium, hard, harder]
+
+test_episodes: 100 # Number of episodes to test the model
+
+# Model hyperparameters 
+ModelParams:
+  policy: CnnPolicy # Model for the policy
+  policy_kwargs: {"normalize_images": False} # Dictionary of extra arguments for the policy (ex: n_envs, n_steps, ...). None means default parameters
+
+  gamma: 0.90 # the discount factor
+
+  # Optimized hyperparameters from rl-baselines3-zoo
+  learning_rate: 0.00025 
+  
+  n_steps: 128 # number of steps to run for each environment per update
+  batch_size: 256
+  n_epochs: 4 # number of epochs when optimizing the surrogate loss
+  gae_lambda: 0.99 # lambda parameter of the generalized advantage estimation, 1 to disable it
+
+  # Cliping loss params
+  clip_range: 0.1 # Surrogate loss clipping 
+  clip_range_vf: 1 # Value function loss clipping
+
+  ent_coef: 0.01 # Entropy coefficient for the loss calculation, 0 to disable
+  vf_coef: 0.5 # Value function loss coefficient, If set to 0.5, value function loss will be half the policy loss
+  max_grad_norm: 0.5 # Gradient norm clipping
+
+
+  stats_window_size: 100 # The size of the window used to compute the running average of the episode rewards, and std
+  verbose: 2 # The verbosity level: 0 no output, 1 info, 2 debug
+
